@@ -1,0 +1,1 @@
+([('client', '/Users/test/study_sync/dist/client', 'EXECUTABLE')],)
