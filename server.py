@@ -1,5 +1,19 @@
+import socket
+import threading
+import os
+
 clients = []
 usernames = {}
+
+def broadcast(message, sender_conn):
+    for client in clients:
+        if client != sender_conn:
+            try:
+                client.send(message.encode())
+            except:
+                client.close()
+                if client in clients:
+                    clients.remove(client)
 
 def handle_client(conn, addr):
     print(f"[+] Connected: {addr}")
@@ -19,14 +33,3 @@ def handle_client(conn, addr):
             if not msg:
                 break
             full_msg = f"{usernames[conn]}: {msg}"
-            broadcast(full_msg, conn)
-        except:
-            break
-
-    # Client disconnected
-    print(f"[-] {usernames.get(conn, 'Unknown')} disconnected")
-    broadcast(f"*** {usernames.get(conn, 'Unknown')} left the chat ***", conn)
-    clients.remove(conn)
-    usernames.pop(conn, None)
-    conn.close()
-
